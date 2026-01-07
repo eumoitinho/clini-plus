@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  PACIENTE
+  PROFISSIONAL
+  ADMIN
+}
+
+enum AgendamentoStatus {
+  PENDENTE
+  CONFIRMADO
+  CANCELADO
+  REALIZADO
+}
+
+enum AgendamentoTipo {
+  PRESENCIAL
+  TELECONSULTA
+}
+
+enum PagamentoStatus {
+  PENDENTE
+  PAGO
+  CANCELADO
+  ESTORNADO
+}
+
+enum PagamentoMetodo {
+  PIX
+  CARTAO
+  BOLETO
+}
+
+model Usuario {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  nome         String
+  telefone     String?
+  tipo         UserType  @default(PACIENTE)
+  avatarUrl    String?
+  azureAdId    String?   @unique
+  criadoEm     DateTime  @default(now())
+  atualizadoEm DateTime  @updatedAt
+
+  paciente     Paciente?
+  profissional Profissional?
+  mensagens    Mensagem[]
+  documentos   Documento[]
+
+  @@map("usuarios")
+}
+
+model Paciente {
+  id              String    @id @default(uuid())
+  usuarioId       String    @unique
+  cpf             String?   @unique
+  dataNascimento  DateTime?
+  endereco        Json?
+  historicoMedico Json?
+  criadoEm        DateTime  @default(now())
+
+  usuario      Usuario       @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  agendamentos Agendamento[]
+
+  @@map("pacientes")
+}
+
+model Profissional {
+  id             String   @id @default(uuid())
+  usuarioId      String   @unique
+  crm            String   @unique
+  especialidade  String
+  valorConsulta  Decimal  @db.Decimal(10, 2)
+  biografia      String?
+  ativo          Boolean  @default(true)
+  criadoEm       DateTime @default(now())
+
+  usuario          Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  disponibilidades Disponibilidade[]
+  agendamentos     Agendamento[]
+
+  @@map("profissionais")
+}
+
+model Disponibilidade {
+  id             String @id @default(uuid())
+  profissionalId String
+  diaSemana      Int
+  horaInicio     String
+  horaFim        String
+  duracaoSlot    Int    @default(30)
+
+  profissional Profissional @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+
+  @@unique([profissionalId, diaSemana, horaInicio])
+  @@map("disponibilidades")
+}
+
+model Agendamento {
+  id             String            @id @default(uuid())
+  pacienteId     String
+  profissionalId String
+  dataHora       DateTime
+  status         AgendamentoStatus @default(PENDENTE)
+  tipo           AgendamentoTipo   @default(TELECONSULTA)
+  observacoes    String?
+  criadoEm       DateTime          @default(now())
+  atualizadoEm   DateTime          @updatedAt
+
+  paciente     Paciente     @relation(fields: [pacienteId], references: [id])
+  profissional Profissional @relation(fields: [profissionalId], references: [id])
+  consulta     Consulta?
+  pagamento    Pagamento?
+
+  @@map("agendamentos")
+}
+
+model Consulta {
+  id             String    @id @default(uuid())
+  agendamentoId  String    @unique
+  salaVideoId    String?
+  inicio         DateTime?
+  fim            DateTime?
+  duracaoMinutos Int?
+  observacoes    String?
+  prescricao     String?
+  criadoEm       DateTime  @default(now())
+
+  agendamento Agendamento @relation(fields: [agendamentoId], references: [id])
+  mensagens   Mensagem[]
+  documentos  Documento[]
+
+  @@map("consultas")
+}
+
+model Pagamento {
+  id              String           @id @default(uuid())
+  agendamentoId   String           @unique
+  valor           Decimal          @db.Decimal(10, 2)
+  status          PagamentoStatus  @default(PENDENTE)
+  metodo          PagamentoMetodo?
+  gatewayId       String?
+  gatewayResponse Json?
+  pagoEm          DateTime?
+  criadoEm        DateTime         @default(now())
+
+  agendamento Agendamento @relation(fields: [agendamentoId], references: [id])
+
+  @@map("pagamentos")
+}
+
+model Mensagem {
+  id          String   @id @default(uuid())
+  consultaId  String
+  remetenteId String
+  conteudo    String
+  tipo        String   @default("texto")
+  arquivoUrl  String?
+  lido        Boolean  @default(false)
+  enviadoEm   DateTime @default(now())
+
+  consulta  Consulta @relation(fields: [consultaId], references: [id], onDelete: Cascade)
+  remetente Usuario  @relation(fields: [remetenteId], references: [id])
+
+  @@map("mensagens")
+}
+
+model Documento {
+  id           String   @id @default(uuid())
+  consultaId   String?
+  usuarioId    String
+  nomeArquivo  String
+  urlStorage   String
+  tipoMime     String?
+  tamanhoBytes Int?
+  enviadoEm    DateTime @default(now())
+
+  consulta Consulta? @relation(fields: [consultaId], references: [id])
+  usuario  Usuario   @relation(fields: [usuarioId], references: [id])
+
+  @@map("documentos")
+}

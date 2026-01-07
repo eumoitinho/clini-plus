@@ -1,0 +1,19 @@
+# RN (Mobile)
+
+Esta seção descreve o app React Native planejado para **iOS** e **Android**.
+
+## Objetivo
+- Oferecer o fluxo do paciente com login, agenda, chat e vídeo.
+- Compartilhar o mesmo backend (`/api`) com o front web.
+
+## Integrações previstas
+- **Autenticação:** Azure AD B2C via NextAuth.
+- **Chat em tempo real:** Azure SignalR.
+- **Videoconferência:** Twilio Video.
+- **Notificações:** Resend para e-mails e push via provedor futuro.
+
+## Navegação sugerida
+- **Home** → próximas consultas.
+- **Buscar profissional** → filtros por especialidade.
+- **Consulta** → chat + vídeo.
+- **Perfil** → documentos e dados pessoais.
