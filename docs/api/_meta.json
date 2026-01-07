@@ -1,0 +1,12 @@
+{
+  "index": "Visão geral",
+  "auth": "Auth",
+  "usuarios": "Usuários",
+  "profissionais": "Profissionais",
+  "agendamentos": "Agendamentos",
+  "consultas": "Consultas",
+  "chat": "Chat",
+  "pagamentos": "Pagamentos",
+  "upload": "Upload",
+  "webhooks": "Webhooks"
+}
