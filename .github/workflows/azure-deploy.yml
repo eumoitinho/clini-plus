@@ -30,14 +30,14 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NEXT_PUBLIC_APP_URL: https://cliniplus-app.azurewebsites.net
+          NEXT_PUBLIC_APP_URL: https://cliniplus.m2z.com.br
 
       - name: Zip artifact for deployment
         run: |
           cp -r .next/standalone ./deploy
           cp -r .next/static ./deploy/.next/static
-          cp -r public ./deploy/public
-          cp -r prisma ./deploy/prisma
+          [ -d public ] && cp -r public ./deploy/public || mkdir -p ./deploy/public
+          [ -d prisma ] && cp -r prisma ./deploy/prisma || true
           cd deploy && zip -r ../release.zip . && cd ..
 
       - name: Upload artifact
