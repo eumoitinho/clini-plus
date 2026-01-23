@@ -1,4 +1,7 @@
-const withNextra = require("nextra")({
+const nextra = require("nextra");
+
+// Support both CommonJS and ESM default exports from nextra
+const withNextra = (nextra?.default ?? nextra)({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx"
 });

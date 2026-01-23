@@ -1,4 +1,4 @@
-{
+export default {
   "index": "Visão geral",
   "auth": "Auth",
   "usuarios": "Usuários",

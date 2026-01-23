@@ -1,7 +1,10 @@
+import { Outfit } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
   title: {
@@ -18,10 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
-      <body className="min-h-screen bg-white text-slate-900 antialiased">
+    <html lang="pt-BR" className={outfit.variable}>
+      <body className="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
         <Header />
-        <main className="mx-auto w-full max-w-6xl px-4 py-10">
+        <main className="w-full">
           {children}
         </main>
         <Footer />
