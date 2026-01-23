@@ -40,7 +40,7 @@ export default function PacienteDashboardPage() {
             {menuItems.map((item) => (
               <Link
                 key={item.label}
-                href={item.href}
+                href={item.href as any}
                 className="group flex flex-col items-center justify-center rounded-[2rem] bg-brand-50 p-6 text-center transition-all hover:bg-brand-100 hover:shadow-md"
               >
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg shadow-brand-500/30 transition-transform group-hover:scale-110">

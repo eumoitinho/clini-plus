@@ -3,8 +3,8 @@ import Link from "next/link";
 const navigation = [
   { href: "/", label: "Home" },
   { href: "/sobre", label: "Sobre" },
-  { href: "/planos", label: "Planos" },
-  { href: "/contato", label: "Contato" },
+  { href: "/especialidades", label: "Especialidades" },
+  { href: "/especialistas", label: "Especialistas" },
   { href: "/faq", label: "FAQ" }
 ];
 
@@ -26,11 +26,11 @@ export function Header() {
               <path d="M12 5v14M5 12h14" />
             </svg>
           </div>
-          Lorem Ipsum
+          CLINI+
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
           {navigation.map((item) => (
-            <Link key={item.href} href={item.href} className="text-white/80 hover:text-white">
+            <Link key={item.href} href={item.href as any} className="text-white/80 hover:text-white">
               {item.label}
             </Link>
           ))}
@@ -38,7 +38,7 @@ export function Header() {
         <div className="flex items-center gap-3 text-sm">
           <Link
             href="/login"
-            className="hidden rounded-full px-4 py-2 font-medium text-white hover:bg-white/10 md:block" // Removed border/bg for cleaner look
+            className="hidden rounded-full px-4 py-2 font-medium text-white hover:bg-white/10 md:block"
           >
             Entrar
           </Link>
