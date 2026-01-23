@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Providers } from "./providers";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
@@ -23,11 +24,13 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={outfit.variable}>
       <body className="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
-        <Header />
-        <main className="w-full">
-          {children}
-        </main>
-        <Footer />
+        <Providers>
+          <Header />
+          <main className="w-full">
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

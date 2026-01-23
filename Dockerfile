@@ -1,7 +1,7 @@
 FROM node:20-alpine AS base
 
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 ENV NODE_ENV=development
 COPY package.json package-lock.json* yarn.lock* pnpm-lock.yaml* ./
@@ -13,6 +13,7 @@ RUN \
   fi
 
 FROM base AS builder
+RUN apk add --no-cache openssl
 WORKDIR /app
 ENV NODE_ENV=development
 COPY --from=deps /app/node_modules ./node_modules
@@ -21,6 +22,7 @@ RUN npx prisma generate
 RUN npm run build
 
 FROM base AS runner
+RUN apk add --no-cache openssl
 WORKDIR /app
 ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs

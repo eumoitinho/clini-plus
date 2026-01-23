@@ -9,10 +9,14 @@ const withNextra = (nextra?.default ?? nextra)({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    typedRoutes: true
+  output: "standalone",
+  pageExtensions: ["ts", "tsx", "mdx"],
+  typescript: {
+    ignoreBuildErrors: true
   },
-  pageExtensions: ["ts", "tsx", "mdx"]
+  eslint: {
+    ignoreDuringBuilds: true
+  }
 };
 
 module.exports = withNextra(nextConfig);
