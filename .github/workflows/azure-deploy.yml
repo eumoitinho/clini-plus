@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
@@ -49,9 +48,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -61,17 +57,10 @@ jobs:
       - name: Unzip artifact
         run: unzip release.zip -d release
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: df5ee52f-9e3e-4815-817c-f1f34aeb0d92
-          tenant-id: 0ec4b109-2bdb-4d88-9f9a-fc697e83b65b
-          subscription-id: 287cb8fb-a658-4e09-8810-e159070f861f
-
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'cliniplus-app'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: release
           startup-command: 'node server.js'
